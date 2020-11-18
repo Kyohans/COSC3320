@@ -42,9 +42,8 @@ SELECT(A,k)
 3. Let B = [b_1, b_2, b_3,..., b_n/5]
 4. medianB = SELECT(B, len(B)/2)
 5. rearrange A around medianB so that elements that are smaller comes before it and elements that are larger comes after. Elements equal to medianB are next to medianB.
-6. Let j = index of medianB in rearranged A (or closest position on n/2 if there are many medianB's)
-7. Let p be the position of j (pivot)
-8. if (k < p) return SELECT (A[1...j-1], k)
+6. Let p be the position of j in rearranged A (pivot)
+7. if (k < p) return SELECT (A[1...j-1], k)
    if (k = p) return j
    if (k > p) return SELECT (A[j+1...n], k-j)
 '''
