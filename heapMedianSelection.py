@@ -1,33 +1,33 @@
 ''' 
-Choosing the k-th smallest element in an unsorted array by use of heap sorth
+Choosing the k-th smallest element in an unsorted array by use of heap sort
 Written for COSC 3320 Project for Fall 2020 by Khalyl Smith
-
-Note: heapify and heapSort were not written by me! It was written by Muhit Kumra from GeeksForGeeks 
 '''
 
+# Builds a max heap of an array where
+# arr = given array
+# n = size of array
+# i = index in arr
 def heapify(arr, n, i):
-    largest = i  # Initialize largest as root
-    l = 2 * i + 1     # left = 2*i + 1
-    r = 2 * i + 2     # right = 2*i + 2
- 
-    # See if left child of root exists and is
-    # greater than root
-    if l < n and arr[largest] < arr[l]:
-        largest = l
- 
-    # See if right child of root exists and is
-    # greater than root
-    if r < n and arr[largest] < arr[r]:
-        largest = r
- 
+    largest = i         # Initialize largest as the root
+    left = 2 * i + 1    # Left child of root
+    right = 2 * i + 2   # Right child of root
+
+    # Check if left child exists and is greater than its parent
+    if left < n and arr[largest] < arr[left]:
+        largest = left
+
+    # Check if right child exists and is greater than its parent
+    if right < n and arr[largest] < arr[right]:
+        largest = right
+
     # Change root, if needed
     if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]  # swap
- 
-        # Heapify the root.
+        arr[i], arr[largest] = arr[largest], arr[i]
+
+        # Recursively call heapify on the root
         heapify(arr, n, largest)
  
-# The main function to sort an array of given size
+# Sorts an array by using a max heap
 def heapSort(arr):
     n = len(arr)
  
@@ -35,9 +35,9 @@ def heapSort(arr):
     for i in range(n//2 - 1, -1, -1):
         heapify(arr, n, i)
  
-    # One by one extract elements
+    # Extract elements from heap to construct a sorted array
     for i in range(n-1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]  # swap
+        arr[i], arr[0] = arr[0], arr[i]
         heapify(arr, i, 0)
 
 '''
@@ -54,13 +54,9 @@ SELECT(A,k)
    if (k > p) return SELECT (A[j+1...n], k-j)
 '''
 def select(A, k):
-    if k > len(A):
-        k -= len(A)
-        return select(A,k)
-
     if len(A) < 10:
         heapSort(A)
-        return A[k-1]
+        return A[k]
 
     # 1. Split A into n/5 groups
     S = []
@@ -75,14 +71,13 @@ def select(A, k):
     for sub in S:
         heapSort(sub)
         medians.append(sub[len(sub)//2])
-    heapSort(medians)
 
     # 4. Median of medians
     j = select(medians, len(medians)//2)
 
     # 5. Rearrange A
     A1 = [x for x in A if x < j]     # Elements smaller than j
-    A2 = [x for x in A if x == j]     # Elements equal to j
+    A2 = [x for x in A if x == j]    # Elements equal to j
     A3 = [x for x in A if x > j]     # Elements larger than j
     rearrangedA = A1 + A2 + A3
 
@@ -101,6 +96,8 @@ def select(A, k):
 # Main driver code
 if __name__ == "__main__":
     arr = list(map(int, input('Array > ').rstrip().split()))
-    k = int(input('Index > '))
-    ans = select(arr, k)
-    print('Answer:',ans)
+    k = int(input('k > '))
+
+    if k <= len(arr):
+        ans = select(arr, k)
+        print('Answer:',ans)
