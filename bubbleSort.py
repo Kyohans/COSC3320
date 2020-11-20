@@ -1,50 +1,20 @@
 import time
-import sys
-
-''' 
-Choosing the k-th smallest element in an unsorted array by use of heap sort
-Written for COSC 3320 Project for Fall 2020 by Khalyl Smith
-'''
-
-# Starting clock to track running time
+#starting my clock to time my program running time
 start_time = time.time()
 
-# Builds a max heap of an array where
-# arr = given array
-# n = size of array
-# i = index in arr
-def heapify(arr, n, i):
-    largest = i         # Initialize largest as the root
-    left = 2 * i + 1    # Left child of root
-    right = 2 * i + 2   # Right child of root
 
-    # Check if left child exists and is greater than its parent
-    if left < n and arr[largest] < arr[left]:
-        largest = left
+def bubbleSort(listArray):
+    postion = len(listArray)-1
+    isSorted = False
 
-    # Check if right child exists and is greater than its parent
-    if right < n and arr[largest] < arr[right]:
-        largest = right
+    while not isSorted:
+        isSorted = True
+        for i in range(0, postion):
+            if listArray[i] > listArray[i+1]:
+                isSorted = False
+                listArray[i], listArray[i+1] = listArray[i+1], listArray[i]
+    return listArray
 
-    # Change root, if needed
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-
-        # Recursively call heapify on the root
-        heapify(arr, n, largest)
- 
-# Sorts an array by using a max heap
-def heapSort(arr):
-    n = len(arr)
- 
-    # Build a maxheap.
-    for i in range(n//2 - 1, -1, -1):
-        heapify(arr, n, i)
- 
-    # Extract elements from heap to construct a sorted array
-    for i in range(n-1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]
-        heapify(arr, i, 0)
 
 '''
 Linear-Time Median Selection
@@ -60,14 +30,15 @@ SELECT(A,k)
    if (k > p) return SELECT (A[j+1...n], k-j)
 '''
 
+
 def select(A, k):
     if k > len(A):
         while k > len(A):
             k -= len(A)
-        return select(A,k)
+        return select(A, k)
 
     if len(A) < 10:
-        heapSort(A)
+        bubbleSort(A)
         return A[k-1]
 
     # 1. Split A into n/5 groups
@@ -81,7 +52,7 @@ def select(A, k):
     medians = []    # List of medians of each i-th group
     # 2-3. Use heap sort on each i-th group and append their median to medians
     for sub in S:
-        heapSort(sub)
+        bubbleSort(sub)
         medians.append(sub[len(sub)//2])
 
     # 4. Median of medians
@@ -89,7 +60,7 @@ def select(A, k):
 
     # 5. Rearrange A
     A1 = [x for x in A if x < j]     # Elements smaller than j
-    A2 = [x for x in A if x == j]    # Elements equal to j
+    A2 = [x for x in A if x == j]     # Elements equal to j
     A3 = [x for x in A if x > j]     # Elements larger than j
     rearrangedA = A1 + A2 + A3
 
@@ -105,6 +76,7 @@ def select(A, k):
     elif k > p:
         return select(rearrangedA[p+1:n], k-p)
 
+
 # Main driver code
 if __name__ == "__main__":
     arr = list(map(int, input('Array > ').rstrip().split()))
@@ -112,5 +84,5 @@ if __name__ == "__main__":
 
     if k <= len(arr):
         ans = select(arr, k)
-        print('Answer:',ans)
+        print('Answer:', ans)
         print("Running time: %s seconds" % (time.time() - start_time))
